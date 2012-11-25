@@ -26,8 +26,8 @@ then
   echo "emcc not found at ${EMSCRIPTEN}"
   exit 1
 fi
-
-pushd ./build
+mkdir build
+pushd build
 
 # download gpg-error
 if [ ! -e "libgpg-error-${LIBGPG_ERROR_VERSION}.tar.bz2" ]
