@@ -24,3 +24,8 @@ gcrypt-tests-fastmpi:
 	$(EMCC) $(GCRYPT_TESTS)/pubkey.o    -o tests/pubkey-fast.js $(FASTMPI)
 	$(EMCC) $(GCRYPT_TESTS)/keygen.o    -o tests/keygen-fast.js $(FASTMPI)
 	$(EMCC) $(GCRYPT_TESTS)/prime.o     -o tests/prime-fast.js  $(FASTMPI)
+
+clean:
+	rm -fr tests/*
+	rm -fr build/*
+
