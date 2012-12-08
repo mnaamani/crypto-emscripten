@@ -3,8 +3,7 @@
 #library versions
 LIBGPG_ERROR_VERSION="1.10"
 LIBGCRYPT_VERSION="1.5.0"
-LIBOTR_VERSION="3.2.1"
-#LIBOTR_VERSION="4.0.0"
+LIBOTR_VERSION="4.0.0"
 
 #todo:get path from ~/.emscripten
 #default paths to emscripten and clang/llvm
@@ -57,7 +56,7 @@ then
 	tar xjf "libgpg-error-${LIBGPG_ERROR_VERSION}.tar.bz2"
 	pushd "libgpg-error-${LIBGPG_ERROR_VERSION}"
 	BASEDIR=$(dirname $(pwd))
-	${EMSCRIPTEN}/emconfigure ./configure --prefix=${BASEDIR}
+	${EMSCRIPTEN}/emconfigure ./configure --prefix=${BASEDIR} --enable-static --disable-shared
     mv src/Makefile src/Makefile.original
     sed -e 's:\$(CC_FOR_BUILD) -I\. -I\$(srcdir) -o $@:\$(CC_FOR_BUILD) -I. -I\$(srcdir) -o $@.js:' \
         -e 's:\./mkerrcodes:node ./mkerrcodes.js:' src/Makefile.original > src/Makefile
@@ -72,7 +71,7 @@ then
     tar xjf "libgcrypt-${LIBGCRYPT_VERSION}.tar.bz2"
     pushd "libgcrypt-${LIBGCRYPT_VERSION}"
     BASEDIR=$(dirname $(pwd))
-    ${EMSCRIPTEN}/emconfigure ./configure --prefix=${BASEDIR} --with-gpg-error-prefix=${BASEDIR} --disable-asm
+    ${EMSCRIPTEN}/emconfigure ./configure --prefix=${BASEDIR} --with-gpg-error-prefix=${BASEDIR} --disable-asm --enable-static --disable-shared
     mv config.h config.h.original
     sed -e "s:#define HAVE_SYSLOG 1::" \
         -e "s:#define HAVE_SYS_SELECT_H 1::" config.h.original > config.h
@@ -89,7 +88,7 @@ then
     tar xzf "libotr-${LIBOTR_VERSION}.tar.gz"
     pushd "libotr-${LIBOTR_VERSION}"
     BASEDIR=$(dirname $(pwd))
-    ${EMSCRIPTEN}/emconfigure ./configure --prefix=${BASEDIR} --with-libgcrypt-prefix=${BASEDIR}
+    ${EMSCRIPTEN}/emconfigure ./configure --prefix=${BASEDIR} --with-libgcrypt-prefix=${BASEDIR} --enable-static --disable-shared
     make
     make install
     popd
