@@ -7,7 +7,7 @@ FASTMPI= -lgcrypt -lgpg-error -L./build/lib --pre-js ./src/fast_mpi.js
 libotr-test:
 	mkdir -p tests/
 	$(EMCC) src/libotr-test.c -o tests/libotr-test.js -I./build/include -lotr \
-		--embed-file src/alice.keys $(FASTMPI)
+		--embed-file keys/alice.keys $(FASTMPI)
 
 gcrypt-tests:
 	mkdir -p tests/

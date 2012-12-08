@@ -36,8 +36,8 @@ test_generate_key(OtrlUserState userstate, const char* keys, const char* account
 gcry_error_t
 test_read_file(OtrlUserState userstate, const char* keys, const char* accountname, const char* protocol){
     char fingerprint[45];
-    puts("reading alice.keys");
-	gcry_error_t error = otrl_privkey_read(userstate, "alice.keys");
+    printf("reading %s\n", keys);
+	gcry_error_t error = otrl_privkey_read(userstate, keys);
 
 	if(error){
 		printf("test_read_file FAILED.\n");
@@ -63,8 +63,8 @@ main(){
     initialise();
     OtrlUserState userstate = otrl_userstate_create();
 
-    test_read_file(userstate,"alice.keys","alice@telechat.org","telechat");
-    test_generate_key(userstate,"bob.keys","bob@telechat.org","telechat");
+    test_read_file(userstate,"/keys/alice.keys","alice@telechat.org","telechat");
+    test_generate_key(userstate,"/keys/bob.keys","bob@telechat.org","telechat");
 
     otrl_userstate_free(userstate);
     return 0;

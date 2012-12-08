@@ -95,7 +95,7 @@ Module['preRun'].push(function(){
     Module["libgcrypt"]["mpi_release"] = gcry_.mpi_release = cwrap('_gcry_mpi_release','',['number']);
     Module["libgcrypt"]["mpi_scan"] = gcry_.mpi_scan = cwrap('_gcry_mpi_scan','number',['number','number','string','number','number']);
     Module["libgcrypt"]["mpi_print"] = gcry_.mpi_print = cwrap('_gcry_mpi_print','number',['number','number','number','number','number']);
-    Module["libgcrypt"]["strerror"] = gcry_.strerror = cwrap('gcry_strerror','string',['number']);
+    Module["libgcrypt"]["strerror"] = gcry_.strerror = cwrap('_gcry_strerror','string',['number']);
     
 /* native alot faster don't override
         __gcry_mpi_add = function BigInt_MPI_ADD(w,u,v){
