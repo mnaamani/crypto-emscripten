@@ -88,7 +88,7 @@ then
     tar xzf "libotr-${LIBOTR_VERSION}.tar.gz"
     pushd "libotr-${LIBOTR_VERSION}"
     BASEDIR=$(dirname $(pwd))
-    ${EMSCRIPTEN}/emconfigure ./configure --prefix=${BASEDIR} --with-libgcrypt-prefix=${BASEDIR} --enable-static --disable-shared
+    ${EMSCRIPTEN}/emconfigure ./configure --prefix=${BASEDIR} --with-libgcrypt-prefix=${BASEDIR} --disable-static --enable-shared
     make
     make install
     popd
