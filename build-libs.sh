@@ -5,27 +5,29 @@ LIBGPG_ERROR_VERSION="1.10"
 LIBGCRYPT_VERSION="1.5.0"
 LIBOTR_VERSION="4.0.0"
 
-#todo:get path from ~/.emscripten
-#default paths to emscripten and clang/llvm
-EMSCRIPTEN_HOME="${HOME}/Dev/emscripten"
-CLANG_HOME="${HOME}/clang+llvm-3.1/bin"
 
-export CPP="${CLANG_HOME}/clang -E"
-
-# Retrieve EMSCRIPTEN path to use
+#commandline argument
 EMSCRIPTEN=$1
 if [ "${EMSCRIPTEN}" == "" ]
 then
-	EMSCRIPTEN=${EMSCRIPTEN_HOME}
+    #environment variable EMSCRIPTEN_ROOT
+    EMSCRIPTEN=${EMSCRIPTEN_ROOT}
+    if [ "${EMSCRIPTEN}" == "" ]
+    then
+        #EMSCRIPTEN_ROOT from ~/.emscripten python config file
+        EMSCRIPTEN=`./find-emcc.py`
+    fi
 fi
-
-echo "Emscripten path: ${EMSCRIPTEN}"
 
 if [ ! -e "${EMSCRIPTEN}/emcc" ]
 then
-  echo "emcc not found at ${EMSCRIPTEN}"
+  echo "emscripten not found at ${EMSCRIPTEN}"
   exit 1
 fi
+
+LLVM_ROOT=`${EMSCRIPTEN}/em-config LLVM_ROOT`
+export CPP="${LLVM_ROOT}/clang -E"
+
 mkdir -p build
 pushd build
 
