@@ -18,7 +18,7 @@ tests: $(TESTS)
 
 tests-fastmpi: $(TESTS_FASTMPI)
 
-otr-test:
+libotr-test:
 	$(EMCC) src/libotr-test.c -o tests/libotr-test.js -I./build/include -lotr \
 		--embed-file keys/alice.keys $(FASTMPI) $(OPTIMISATION)
 clean:

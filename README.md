@@ -34,8 +34,8 @@ This will configure and compile the libraries into llvm bitcode.
 
 We can now compile C code that links to these libraries into javascript.
 
-      make otr-test
-      node tests/otr-test
+      make libotr-test
+      node tests/libotr-test
 
 To build the libgcrypt tests:
 
