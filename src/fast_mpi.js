@@ -135,6 +135,7 @@ Module['preRun'].push(function(){
         if(mpi_rem) __bigint2mpi(mpi_rem, r);
     };
 */      
+/* does mpi_gcd override effect pubkey.c test: _check_x931_derived_key fails self test when generating key
         console.log("overriding __gcry_mpi_gcd");
         __gcry_mpi_gcd = function BigInt_MPI_GCD(mpi_g, mpi_a, mpi_b){
             //console.log(">__gcry_mpi_gcd()");
@@ -146,6 +147,7 @@ Module['preRun'].push(function(){
             if( Module["MPI_HOOK"]["BigInt"]["equalsInt"](g,1) ) return 1;
             return 0;
         };
+*/
       console.log("overriding __gcry_mpi_mod");
         __gcry_mpi_mod = function BigInt_MPI_MOD(mpi_r,mpi_x,mpi_n){
             //console.log(">__gcry_mpi_mod()");
