@@ -1,31 +1,31 @@
-EMCC= ~/Dev/emscripten/emcc
+EMCC= `./find-emcc.py`/emcc
 
-GCRYPT_TESTS= build/libgcrypt-1.5.0/tests
+GCRYPT= build/libgcrypt-1.5.0
 LIBS= -lgcrypt -lgpg-error -L./build/lib --pre-js ./src/pre.js
 FASTMPI= -lgcrypt -lgpg-error -L./build/lib --pre-js ./src/fast_mpi.js 
+OPTIMISATION = -O1 --closure 0 --llvm-opts 0 --llvm-lto 0
 
-libotr-test:
-	mkdir -p tests/
+TEST_OBJS=benchmark.o basic.o pubkey.o keygen.o prime.o ac-data.o ac.o ac-schemes.o curves.o \
+    fips186-dsa.o fipsdrv.o hmac.o mpitests.o pkcs1v2.o random.o register.o rsacvt.o t-kdf.o \
+    t-mpi-bit.o tsexp.o version.o
+
+TESTS=$(TEST_OBJS:.o=._js)
+TESTS_FASTMPI=$(TEST_OBJS:.o=.__js)
+
+all: otr-test tests-fastmpi tests
+
+tests: $(TESTS)
+
+tests-fastmpi: $(TESTS_FASTMPI)
+
+otr-test:
 	$(EMCC) src/libotr-test.c -o tests/libotr-test.js -I./build/include -lotr \
-		--embed-file keys/alice.keys $(FASTMPI)
-
-gcrypt-tests:
-	mkdir -p tests/
-	$(EMCC) $(GCRYPT_TESTS)/benchmark.o -o tests/benchmark.js $(LIBS)
-	$(EMCC) $(GCRYPT_TESTS)/basic.o     -o tests/basic.js  $(LIBS)
-	$(EMCC) $(GCRYPT_TESTS)/pubkey.o    -o tests/pubkey.js $(LIBS)
-	$(EMCC) $(GCRYPT_TESTS)/keygen.o    -o tests/keygen.js $(LIBS)
-	$(EMCC) $(GCRYPT_TESTS)/prime.o     -o tests/prime.js  $(LIBS)
-
-gcrypt-tests-fastmpi:
-	mkdir -p tests/
-	$(EMCC) $(GCRYPT_TESTS)/benchmark.o -o tests/benchmark-fast.js $(FASTMPI)
-	$(EMCC) $(GCRYPT_TESTS)/basic.o     -o tests/basic-fast.js  $(FASTMPI)
-	$(EMCC) $(GCRYPT_TESTS)/pubkey.o    -o tests/pubkey-fast.js $(FASTMPI)
-	$(EMCC) $(GCRYPT_TESTS)/keygen.o    -o tests/keygen-fast.js $(FASTMPI)
-	$(EMCC) $(GCRYPT_TESTS)/prime.o     -o tests/prime-fast.js  $(FASTMPI)
-
+		--embed-file keys/alice.keys $(FASTMPI) $(OPTIMISATION)
 clean:
 	rm -fr tests/*
-	rm -fr build/*
 
+%._js:
+	$(EMCC) $(GCRYPT)/tests/$(@:._js=.o) -o tests/$(@:._js=).js $(LIBS) $(OPTIMISATION)
+
+%.__js:
+	$(EMCC) $(GCRYPT)/tests/$(@:.__js=.o) -o tests/$(@:.__js=)-fast.js $(LIBS) $(OPTIMISATION) $(FASTMPI)

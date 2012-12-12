@@ -10,7 +10,6 @@ A build script to compile [GNU Libgcrypt][1] and [Off-the-Record Messaging][2] u
 #### PublicKey crypto boosters
 
 The most compute intensive of libgcrypt's *mpi* functions are overidden with a javascript implementation using [bigint.js][4] for a significant performance boost of the public key crypto.
-*   _gcry_mpi_gcd
 *   _gcry_mpi_mod
 *   _gcry_mpi_powm
 *   _gcry_mpi_invm
@@ -32,18 +31,19 @@ Run the build script (it will try to find emscripten in the following locations;
 This will configure and compile the libraries into llvm bitcode.
 
       ./build-libs.sh "/path/to/emscripten"
-      
+
 We can now compile C code that links to these libraries into javascript.
 
-      ./build-tests.sh
+      make otr-test
+      node tests/otr-test
 
-run some libgcrypt tests:
+To build the libgcrypt tests:
+
+      make tests-fastmpi
+
+run a libgcrypt test:
    
       node tests/basic-fast.js --verbose
-
-run a libotr test:
-
-      node tests/libotr-test.js
 
 *[OTR3-em][7]* and *[OTR4-em][8]* use these libraries to expose a javascript API to libotr.
 [7]: https://github.com/mnaamani/otr3-em
