@@ -3,7 +3,8 @@ EMCC= `./find-emcc.py`/emcc
 GCRYPT= build/libgcrypt-1.5.0
 LIBS= -lgcrypt -lgpg-error -L./build/lib --pre-js ./src/pre.js
 FASTMPI= -lgcrypt -lgpg-error -L./build/lib --pre-js ./src/fast_mpi.js 
-OPTIMISATION = -O1 --closure 0 --llvm-opts 0 --llvm-lto 0
+#malloc fails if -O2 used without llvm-opts 1
+OPTIMISATION = -O2 --closure 0 --llvm-opts 1 --llvm-lto 0
 
 TEST_OBJS=benchmark.o basic.o pubkey.o keygen.o prime.o ac-data.o ac.o ac-schemes.o curves.o \
     fips186-dsa.o fipsdrv.o hmac.o mpitests.o pkcs1v2.o random.o register.o rsacvt.o t-kdf.o \
@@ -12,7 +13,7 @@ TEST_OBJS=benchmark.o basic.o pubkey.o keygen.o prime.o ac-data.o ac.o ac-scheme
 TESTS=$(TEST_OBJS:.o=._js)
 TESTS_FASTMPI=$(TEST_OBJS:.o=.__js)
 
-all: otr-test tests-fastmpi tests
+all: libotr-test tests-fastmpi tests
 
 tests: $(TESTS)
 
