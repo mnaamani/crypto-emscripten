@@ -2,7 +2,6 @@ gcrypt and otr in javascript
 ===================================================
 
 A build script to compile [GNU Libgcrypt][1] and [Off-the-Record Messaging][2] using the awsome [Emscripten][3] cross-compiler.
-A Node/javascript module *[OTR4-em][8]* was developed using this technique.
 
 [1]: http://www.gnu.org/software/libgcrypt/ "gcrypt"
 [2]: http://www.cypherpunks.ca/otr/ "OTR"
@@ -47,6 +46,11 @@ run a libgcrypt test:
    
       node tests/basic-fast.js --verbose
 
-*[OTR3-em][7]* and *[OTR4-em][8]* use these libraries to expose a javascript API to libotr.
-[7]: https://github.com/mnaamani/otr3-em
-[8]: https://github.com/mnaamani/otr4-em
+See Also
+
+- *[OTR4-em][7]* Off the Record Messaging npm module.
+- *[otrTalk][8]* P2P Off the Record chat application.
+
+[7]: https://github.com/mnaamani/otr4-em
+[8]: https://github.com/mnaamani/node-otr-talk
+
