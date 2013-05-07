@@ -4,7 +4,7 @@ GCRYPT= build/libgcrypt-1.5.0
 LIBS= -lgcrypt -lgpg-error -L./build/lib --pre-js ./src/pre.js
 FASTMPI= -lgcrypt -lgpg-error -L./build/lib --pre-js ./src/fast_mpi.js 
 #malloc fails if -O2 used without llvm-opts 1
-OPTIMISATION = -O2 --closure 0 --llvm-opts 1 --llvm-lto 0
+OPTIMISATION = -O2 --closure 0 --llvm-opts 1 --llvm-lto 0 -s ASM_JS=0
 
 TEST_OBJS=benchmark.o basic.o pubkey.o keygen.o prime.o ac-data.o ac.o ac-schemes.o curves.o \
     fips186-dsa.o fipsdrv.o hmac.o mpitests.o pkcs1v2.o random.o register.o rsacvt.o t-kdf.o \

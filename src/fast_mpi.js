@@ -88,7 +88,7 @@ Module['preRun'].push(function(){
 
     Module["malloc"]=_malloc;
     Module["free"]=_free;
-
+    Module["FS"]=FS;
     //select doesn't really have a place in a NODE/JS environment.. since i/o is non-blocking
     _select = (function() {
       return 3;//this means all the three socket sets passed to the function are have sockets ready for reading.
@@ -96,11 +96,12 @@ Module['preRun'].push(function(){
     
     //Math.random = profile(Math.random);
     //if entropy is low.. it will significantly increase time for crypto keygen..
-    Module['FS_createDevice']("/dev/","random",(function(){
-      return Math.floor(Math.random() * 256);//just temporary.. need a platform specific implementation..
+    var devFolder = Module['FS'].findObject("/dev") || Module['FS_createFolder']("/","dev",true,true);
+    Module['FS_createDevice'](devFolder,"random",(function(){
+      return Math.floor(Math.random() * 256);
     }));
 
-    Module['FS_createDevice']("/dev/","urandom",(function(){
+    Module['FS_createDevice'](devFolder,"urandom",(function(){
       return Math.floor(Math.random() * 256);
     }));
     console.error("created /dev/random and /dev/urandom devices.");

@@ -14,14 +14,17 @@ Module['preRun'].push(function(){
     _select = (function() {
       return 3;//this means all the three socket sets passed to the function are have sockets ready for reading.
     });
-    
-    Module['FS_createDevice']("/dev/","random",(function(){
-      return Math.floor(Math.random() * 256);//just temporary.. need a platform specific implementation..
-    }));
 
-    Module['FS_createDevice']("/dev/","urandom",(function(){
+    Module["FS"]=FS;
+    var devFolder = Module['FS'].findObject("/dev") || Module['FS_createFolder']("/","dev",true,true);
+    Module['FS_createDevice'](devFolder,"random",(function(){
       return Math.floor(Math.random() * 256);
     }));
+
+    Module['FS_createDevice'](devFolder,"urandom",(function(){
+      return Math.floor(Math.random() * 256);
+    }));
+    
     console.error("created /dev/random and /dev/urandom devices.");
 
 });
