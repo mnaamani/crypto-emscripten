@@ -16,6 +16,7 @@ Module['preRun'].push(function(){
     });
 
     Module["FS"]=FS;
+    FS.init();
     var devFolder = Module['FS'].findObject("/dev") || Module['FS_createFolder']("/","dev",true,true);
     Module['FS_createDevice'](devFolder,"random",(function(){
       return Math.floor(Math.random() * 256);
