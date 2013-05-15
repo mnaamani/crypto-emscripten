@@ -27,6 +27,7 @@ The */dev/random* and */dev/urandom* virtual devices are implementation using th
 
 #### Building
 [Setup Emscripten](https://github.com/kripken/emscripten/wiki/Tutorial) on your system. 
+working @ https://github.com/kripken/emscripten/tree/0560adda8a6c0259478a54e5b514ceaafe8fc10c
 
 Run the build script (it will try to find emscripten in the following locations; *path specified on the command line*, *EMSCRIPTEN_ROOT* environment variable, and finally in from the config file *~/.emscripten*.)
 This will configure and compile the libraries into llvm bitcode.
