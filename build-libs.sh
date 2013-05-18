@@ -52,6 +52,11 @@ then
   curl -O "http://www.cypherpunks.ca/otr/libotr-${LIBOTR_VERSION}.tar.gz"
 fi
 
+#always rebuild from scratch
+rm "libgpg-error-${LIBGPG_ERROR_VERSION}/config.status"
+rm "libgcrypt-${LIBGCRYPT_VERSION}/config.status"
+rm "libotr-${LIBOTR_VERSION}/config.status"
+
 #configure and build libgpg-error
 if [ ! -e "libgpg-error-${LIBGPG_ERROR_VERSION}/config.status" ]
 then
