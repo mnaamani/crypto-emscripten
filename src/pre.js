@@ -26,7 +26,5 @@ Module['preRun'].push(function(){
       return Math.floor(Math.random() * 256);
     }));
     
-    console.error("created /dev/random and /dev/urandom devices.");
-
 });
 
