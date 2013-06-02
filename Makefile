@@ -20,13 +20,16 @@ tests: $(TESTS)
 tests-fastmpi: $(TESTS_FASTMPI)
 
 libotr-test:
+	mkdir -p tests/
 	$(EMCC) src/libotr-test.c -o tests/libotr-test.js -I./build/include -lotr \
 		--embed-file keys/alice.keys $(FASTMPI) $(OPTIMISATION)
 clean:
 	rm -fr tests/*
 
 %._js:
+	mkdir -p tests/
 	$(EMCC) $(GCRYPT)/tests/$(@:._js=.o) -o tests/$(@:._js=).js $(LIBS) $(OPTIMISATION)
 
 %.__js:
+	mkdir tests/
 	$(EMCC) $(GCRYPT)/tests/$(@:.__js=.o) -o tests/$(@:.__js=)-fast.js $(LIBS) $(OPTIMISATION) $(FASTMPI)
