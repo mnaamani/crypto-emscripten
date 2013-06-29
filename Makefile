@@ -31,5 +31,5 @@ clean:
 	$(EMCC) $(GCRYPT)/tests/$(@:._js=.o) -o tests/$(@:._js=).js $(LIBS) $(OPTIMISATION)
 
 %.__js:
-	mkdir tests/
+	mkdir -p tests/
 	$(EMCC) $(GCRYPT)/tests/$(@:.__js=.o) -o tests/$(@:.__js=)-fast.js $(LIBS) $(OPTIMISATION) $(FASTMPI)
