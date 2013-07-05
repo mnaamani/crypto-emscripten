@@ -10,6 +10,7 @@ __ATINIT__ = __ATINIT__.concat([
 function _i32______gpg_err_init_to_void_____(){};//workaround.. TODO:investigate
 
 Module['preRun'].push(function(){
+    var BigInt = require("bigint");
     //select doesn't really have a place in a NODE/JS environment.. since i/o is non-blocking    
     _select = (function() {
       return 3;//this means all the three socket sets passed to the function are have sockets ready for reading.
@@ -19,11 +20,11 @@ Module['preRun'].push(function(){
     FS.init();
     var devFolder = Module['FS'].findObject("/dev") || Module['FS_createFolder']("/","dev",true,true);
     Module['FS_createDevice'](devFolder,"random",(function(){
-      return Math.floor(Math.random() * 256);
+      return Math.randomByte();
     }));
 
     Module['FS_createDevice'](devFolder,"urandom",(function(){
-      return Math.floor(Math.random() * 256);
+      return Math.randomByte();
     }));
     
 });

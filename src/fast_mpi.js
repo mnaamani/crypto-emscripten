@@ -89,11 +89,11 @@ Module['preRun'].push(function(){
     
     var devFolder = Module['FS'].findObject("/dev") || Module['FS_createFolder']("/","dev",true,true);
     Module['FS_createDevice'](devFolder,"random",(function(){
-      return Math.floor(Math.random() * 256);
+      return Math.randomByte();
     }));
 
     Module['FS_createDevice'](devFolder,"urandom",(function(){
-      return Math.floor(Math.random() * 256);
+      return Math.randomByte();
     }));
     
     _static_buffer_ptr = allocate(4096,"i8",ALLOC_NORMAL);
@@ -203,19 +203,5 @@ Module['preRun'].push(function(){
             __bigint2mpi(mpi_r,bi_result);
         };
 
-        /*static gcry_mpi_t gen_prime (unsigned int nbits, int secret, int randomlevel,
-                             int (*extra_check)(void *, gcry_mpi_t),
-                             void *extra_check_arg);*/
-        _gen_prime = function BigInt_Prime(nbits,secretlevel,randomlevel,xtracheck,xtracheck_args){
-            var mpi_prime = gcry_.mpi_new ( nbits );
-            for(;;){
-                var bi_prime = BigInt["randTruePrime"](nbits);
-                __bigint2mpi(mpi_prime,bi_prime);
-                if(xtracheck && FUNCTION_TABLE[xtracheck](xtracheck_args,mpi_prime)){                
-                       continue;//prime rejected!                
-                }
-                return mpi_prime;
-            }
-        };
 });
 
