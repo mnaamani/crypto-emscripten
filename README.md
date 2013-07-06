@@ -15,15 +15,12 @@ The most compute intensive of libgcrypt's *mpi* functions are overidden with a j
 *   _gcry_mpi_powm
 *   _gcry_mpi_invm
 *   _gcry_mpi_mulpowm
-*   gen_prime
 
 #### A cryptographically secure pseudo-random number generator (CSPRNG)
 
-The */dev/random* and */dev/urandom* virtual devices are implementation using the technique borrowed from arlo's [otr javascript implementation][5], which utilises [seedrandom.js][6] 
+The */dev/random* and */dev/urandom* virtual devices provide a stream of random bytes from generated using salsa20 seeded from crypto.getRandomValues(), based off Arlo's [OTR javascript library][5]
 [4]: http://leemon.com/crypto/BigInt.html "BigInt"
 [5]: https://github.com/arlolra/otr "OTR"
-[6]: http://davidbau.com/archives/2010/01/30/random_seeds_coded_hints_and_quintillions.html "Seedrandom"
-
 
 #### Building
 [Setup Emscripten](https://github.com/kripken/emscripten/wiki/Tutorial) on your system. 
