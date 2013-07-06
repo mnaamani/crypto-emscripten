@@ -16,19 +16,11 @@
  DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-
-var Module = {};
-
-Module["preRun"]=[];
-
+if(!this['Module']){
+    this['Module'] = Module = {};
+    this['Module']["preRun"]=[];
+}
 var BigInt = require("bigint");
-
-/* emcc is generating this code when libgpg-error is compiled to js.. :(
-__ATINIT__ = __ATINIT__.concat([
-  { func: _i32______gpg_err_init_to_void_____ }
-]);
-*/
-function _i32______gpg_err_init_to_void_____(){};//workaround.. TODO:investigate
 
 var _static_buffer_ptr;
 var _static_new_mpi_ptr_ptr;
@@ -77,25 +69,7 @@ function __bigint2mpi(mpi_ptr,bi_num){
 }
 
 Module['preRun'].push(function(){
-
-    Module["malloc"]=_malloc;
-    Module["free"]=_free;
-    Module["FS"]=FS;
-    FS.init();
-
-    _select = (function() {
-      return 3;//this means all the three socket sets passed to the function have sockets ready for reading.
-    });
-    
-    var devFolder = Module['FS'].findObject("/dev") || Module['FS_createFolder']("/","dev",true,true);
-    Module['FS_createDevice'](devFolder,"random",(function(){
-      return Math.randomByte();
-    }));
-
-    Module['FS_createDevice'](devFolder,"urandom",(function(){
-      return Math.randomByte();
-    }));
-    
+    console.log("activating FAST MPI");
     _static_buffer_ptr = allocate(4096,"i8",ALLOC_NORMAL);
     _static_new_mpi_ptr_ptr = allocate(4,"i8",ALLOC_NORMAL);
 
@@ -132,27 +106,23 @@ Module['preRun'].push(function(){
             return 0;
         };
         */
-        __gcry_mpi_mod = function BigInt_MPI_MOD(mpi_r,mpi_x,mpi_n){
-            //console.log(">__gcry_mpi_mod()");
+        __gcry_mpi_mod = globalScope['Module']['__gcry_mpi_mod'] = (function (mpi_r,mpi_x,mpi_n){
             //r = x mod n
             var x = __mpi2bigint(mpi_x);
             var n = __mpi2bigint(mpi_n);
             __bigint2mpi(mpi_r, BigInt["mod"](x,n));
-        };
+        });
         
-        //confirmed bigint mulpowm, powm and invm, gcd  enhance performance..
-        __gcry_mpi_powm = function BigInt_MPI_POWMOD(w, b, e, m){
-            //console.log(">__gcry_mpi_powm()");
+        __gcry_mpi_powm = globalScope['Module']['__gcry_mpi_powm'] = (function (w, b, e, m){
           var bi_base = __mpi2bigint(b);
           var bi_expo = __mpi2bigint(e);
           var bi_mod  = __mpi2bigint(m);
           var result = BigInt["powMod"](bi_base,bi_expo,bi_mod);
           __bigint2mpi(w,result);
-        };
+        });
 
         //return (x**(-1) mod n) for bigInts x and n.  If no inverse exists, it returns null
-        __gcry_mpi_invm = function BigInt_MPI_INVERSEMOD(x,a,m){
-            //console.log(">__gcry_mpi_invm()");
+        __gcry_mpi_invm = globalScope['Module']['__gcry_mpi_invm'] = (function (x,a,m){
             var bi_a = __mpi2bigint(a);
             var bi_m = __mpi2bigint(m);
             var result = BigInt["inverseMod"](bi_a,bi_m);
@@ -162,7 +132,7 @@ Module['preRun'].push(function(){
             }else{
                 return 0;//no inverse mod exists
             }
-        };
+        });
         /*
         //no significant improvement, but if enabled without mulpowm -- degrades performance!
         // w = u * v mod m --> (u*v) mod m  ===  u * (v mod m) ? 
@@ -175,8 +145,7 @@ Module['preRun'].push(function(){
           __bigint2mpi(w,result);
         };
         */
-        __gcry_mpi_mulpowm = function BigInt_MPI_MULPOWM(mpi_r,mpi_array_base,mpi_array_exp,mpi_m){
-            //console.log(">__gcry_mpi_mulpowm()");
+        __gcry_mpi_mulpowm = globalScope['Module']['__gcry_mpi_mulpowm'] = (function (mpi_r,mpi_array_base,mpi_array_exp,mpi_m){
             var indexer = 1;
             var mpi1, mpi2, bi_m,bi_result;
             mpi1 = getValue(mpi_array_base,"i32");
@@ -201,7 +170,5 @@ Module['preRun'].push(function(){
             }
             bi_result = BigInt["mod"](bi_result,bi_m);
             __bigint2mpi(mpi_r,bi_result);
-        };
-
+        });
 });
-

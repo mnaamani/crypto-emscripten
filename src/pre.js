@@ -1,24 +1,19 @@
-var Module = {};
-
-Module["preRun"]=[];
+this['Module'] = Module = {};
+Module["preRun"] = [];
 
 /* emcc is generating this code when libgpg-error is compiled to js.. :(
 __ATINIT__ = __ATINIT__.concat([
   { func: _i32______gpg_err_init_to_void_____ }
 ]);
 */
-function _i32______gpg_err_init_to_void_____(){};//workaround.. TODO:investigate
+function _i32______gpg_err_init_to_void_____(){};//workaround
 
 Module['preRun'].push(function(){
-    var BigInt = require("bigint");
-    //select doesn't really have a place in a NODE/JS environment.. since i/o is non-blocking    
-    _select = (function() {
-      return 3;//this means all the three socket sets passed to the function are have sockets ready for reading.
-    });
+    require("bigint");
 
-    Module["FS"]=FS;
     FS.init();
-    var devFolder = Module['FS'].findObject("/dev") || Module['FS_createFolder']("/","dev",true,true);
+    var devFolder = FS.findObject("/dev") || Module['FS_createFolder']("/","dev",true,true);
+
     Module['FS_createDevice'](devFolder,"random",(function(){
       return Math.randomByte();
     }));
@@ -26,6 +21,4 @@ Module['preRun'].push(function(){
     Module['FS_createDevice'](devFolder,"urandom",(function(){
       return Math.randomByte();
     }));
-    
 });
-
