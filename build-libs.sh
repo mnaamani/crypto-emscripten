@@ -29,6 +29,8 @@ LLVM_ROOT=`${EMSCRIPTEN}/em-config LLVM_ROOT`
 export CPP="${LLVM_ROOT}/clang -E"
 
 mkdir -p build
+cp src/rndlinux.c build/rndlinux.c
+
 pushd build
 
 # download libgpg-error
@@ -78,6 +80,7 @@ then
     tar xjf "libgcrypt-${LIBGCRYPT_VERSION}.tar.bz2"
     pushd "libgcrypt-${LIBGCRYPT_VERSION}"
     BASEDIR=$(dirname $(pwd))
+    cp ${BASEDIR}/rndlinux.c random/rndlinux.c
     ${EMSCRIPTEN}/emconfigure ./configure --prefix=${BASEDIR} --with-gpg-error-prefix=${BASEDIR} --disable-asm --enable-static --disable-shared
     mv config.h config.h.original
     sed -e "s:#define HAVE_SYSLOG 1::" \
