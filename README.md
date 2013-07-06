@@ -35,13 +35,13 @@ We can now compile C code that links to these libraries into javascript.
       make libotr-test
       node tests/libotr-test
 
-To build the libgcrypt tests:
-
-      make tests-fastmpi
-
 run a libgcrypt test:
    
-      node tests/basic-fast.js --verbose
+      make test run-test
+
+To build and run all the libgcrypt tests:
+
+      make test-all run-test-all
 
 See Also
 
