@@ -1,0 +1,19 @@
+<html lang="en">
+  <head>
+    <title></title>
+  <script>
+    var Module = {};
+    Module['arguments'] = ['--verbose'];
+    Module.preRun = [function(){
+        console.log("running in the browser...");
+    }];
+  </script>
+  <script src="../node_modules/bigint.js"></script>
+  <script src="../node_modules/salsa20.js"></script>
+  <script src="../node_modules/random.js"></script>
+  <script src="../tests/basic-fast.js"></script>
+  </head>
+  <body>
+
+  </body>
+</html>

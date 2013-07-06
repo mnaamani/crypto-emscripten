@@ -20,80 +20,54 @@ if(!this['Module']){
     this['Module'] = Module = {};
     this['Module']["preRun"]=[];
 }
-var BigInt = require("bigint");
-
-var gcry_ = {};
-
-/*
- * convert a gcry_mpi_t to a BigInt
- */
-function mpi2bigint(mpi_ptr){
-    if(!mpi2bigint.buffer) mpi2bigint.buffer = _malloc(4096);
-    //gcry_error_t gcry_mpi_print (enum gcry_mpi_format format, unsigned char *buffer, size_t buflen, size_t *nwritten, const gcry_mpi_t a)
-    var err = gcry_.mpi_print(4,mpi2bigint.buffer,4096,0,mpi_ptr);// 4 == HEX Format
-    assert(err==0,"mpi2bigint"+gcry_.strerror(err));
-    var mpi_str = Module['Pointer_stringify'](mpi2bigint.buffer);
-    return BigInt["str2bigInt"](mpi_str,16);
-}
-
-/*
- *   convert bi_num (BigInt) to hex string then scan it into a new gcry_mpi_t, using gcry_mpi_scan
- *   copy the new mpi to mpi_ptr
-*/
-function bigint2mpi(mpi_ptr,bi_num){
-    if(!bigint2mpi.handle) bigint2mpi.handle = _malloc(4);//pointer to *gcry_mpi_t
-    var bi_num_str = BigInt["bigInt2str"](bi_num,16);
-    //gcry_error_t gcry_mpi_scan (gcry_mpi_t *r_mpi, enum gcry_mpi_format format, const unsigned char *buffer, size_t buflen, size_t *nscanned)
-    var err = gcry_.mpi_scan(bigint2mpi.handle,4,bi_num_str,0,0); //4 == HEX Format
-    assert(err===0,"bigint2mpi:"+gcry_.strerror(err));
-
-    var scanned_mpi_ptr = getValue(bigint2mpi.handle,"i32");
-    if(scanned_mpi_ptr==0){
-        console.log("NULL scanned mpi in bigint2mpi()");
-        process.exit();
-    }
-
-    var same = gcry_.mpi_set(mpi_ptr,scanned_mpi_ptr);
-    gcry_.mpi_release(scanned_mpi_ptr);
-    if(same && same != mpi_ptr){
-        return same;
-    }
-}
+var BigInt = BigInt || require("bigint");
 
 Module['preRun'].push(function(){
-    Module["libgcrypt"] = {};
-    Module["libgcrypt"]["mpi_new"] = gcry_.mpi_new = cwrap('_gcry_mpi_new','number',['number']);
-    Module["libgcrypt"]["mpi_set"] = gcry_.mpi_set = cwrap('_gcry_mpi_set','number',['number','number']);
-    Module["libgcrypt"]["mpi_release"] = gcry_.mpi_release = cwrap('_gcry_mpi_release','',['number']);
-    Module["libgcrypt"]["mpi_scan"] = gcry_.mpi_scan = cwrap('_gcry_mpi_scan','number',['number','number','string','number','number']);
-    Module["libgcrypt"]["mpi_print"] = gcry_.mpi_print = cwrap('_gcry_mpi_print','number',['number','number','number','number','number']);
-    Module["libgcrypt"]["strerror"] = gcry_.strerror = cwrap('_gcry_strerror','string',['number']);
+    var gcry_ = {};
+
+    /*
+     * convert a gcry_mpi_t to a BigInt
+     */
+    function mpi2bigint(mpi_ptr){
+        if(!mpi2bigint.buffer) mpi2bigint.buffer = _malloc(4096);
+        //gcry_error_t gcry_mpi_print (enum gcry_mpi_format format, unsigned char *buffer, size_t buflen, size_t *nwritten, const gcry_mpi_t a)
+        var err = gcry_.mpi_print(4,mpi2bigint.buffer,4096,0,mpi_ptr);// 4 == HEX Format
+        assert(err==0,"mpi2bigint"+gcry_.strerror(err));
+        var mpi_str = Module['Pointer_stringify'](mpi2bigint.buffer);
+        return BigInt["str2bigInt"](mpi_str,16);
+    }
+
+    /*
+     *   convert bi_num (BigInt) to hex string then scan it into a new gcry_mpi_t, using gcry_mpi_scan
+     *   copy the new mpi to mpi_ptr
+    */
+    function bigint2mpi(mpi_ptr,bi_num){
+        if(!bigint2mpi.handle) bigint2mpi.handle = _malloc(4);//pointer to *gcry_mpi_t
+        var bi_num_str = BigInt["bigInt2str"](bi_num,16);
+        //gcry_error_t gcry_mpi_scan (gcry_mpi_t *r_mpi, enum gcry_mpi_format format, const unsigned char *buffer, size_t buflen, size_t *nscanned)
+        var err = gcry_.mpi_scan(bigint2mpi.handle,4,bi_num_str,0,0); //4 == HEX Format
+        assert(err===0,"bigint2mpi:"+gcry_.strerror(err));
     
-       //_gcry_mpi_tdiv_qr( gcry_mpi_t quot, gcry_mpi_t rem, gcry_mpi_t num, gcry_mpi_t den)
-        /** !!!!!!! EL GAMAL FAILS in pubkey.js test!!!! so does ECC DSA!! // due to emscripten or llvm optimisations?
-        __gcry_mpi_tdiv_qr = function BigInt_MPI_DIVIDE_(mpi_quot,mpi_rem,mpi_num,mpi_den){
-        var q = BI.str2bigInt("0",16,512);//should have enough elements to store Q
-        var r = BI.str2bigInt("0",16,512);//what is the best size determined from sizes of num and den?
-        var num = mpi2bigint(mpi_num);
-        var den = mpi2bigint(mpi_den);
-        BI.divide_(num,den,q,r);
-        if(mpi_quot) bigint2mpi(mpi_quot,q);
-        if(mpi_rem)  bigint2mpi(mpi_rem, r);
-       };
-       */      
-       /* does mpi_gcd override effect pubkey.c test: _check_x931_derived_key fails self test when generating key
-        console.log("overriding __gcry_mpi_gcd");
-        __gcry_mpi_gcd = function BigInt_MPI_GCD(mpi_g, mpi_a, mpi_b){
-            //console.log(">__gcry_mpi_gcd()");
-            var a = mpi2bigint(mpi_a);
-            var b = mpi2bigint(mpi_b);
-            //assert a.length == b.length
-            var g = BigInt["GCD"](a,b);
-            bigint2mpi(mpi_g, g);
-            if( BigInt["equalsInt"](g,1) ) return 1;
-            return 0;
-        };
-        */
+        var scanned_mpi_ptr = getValue(bigint2mpi.handle,"i32");
+        if(scanned_mpi_ptr==0){
+            console.log("NULL scanned mpi in bigint2mpi()");
+            process.exit();
+        }
+    
+        var same = gcry_.mpi_set(mpi_ptr,scanned_mpi_ptr);
+        gcry_.mpi_release(scanned_mpi_ptr);
+        if(same && same != mpi_ptr){
+            return same;
+        }
+    }
+
+    gcry_.mpi_new = cwrap('_gcry_mpi_new','number',['number']);
+    gcry_.mpi_set = cwrap('_gcry_mpi_set','number',['number','number']);
+    gcry_.mpi_release = cwrap('_gcry_mpi_release','',['number']);
+    gcry_.mpi_scan = cwrap('_gcry_mpi_scan','number',['number','number','string','number','number']);
+    gcry_.mpi_print = cwrap('_gcry_mpi_print','number',['number','number','number','number','number']);
+    gcry_.strerror = cwrap('_gcry_strerror','string',['number']);
+    
         __gcry_mpi_mod = globalScope['Module']['__gcry_mpi_mod'] = (function (mpi_r,mpi_x,mpi_n){
             //r = x mod n
             var x = mpi2bigint(mpi_x);
@@ -121,18 +95,7 @@ Module['preRun'].push(function(){
                 return 0;//no inverse mod exists
             }
         });
-        /*
-        //no significant improvement, but if enabled without mulpowm -- degrades performance!
-        // w = u * v mod m --> (u*v) mod m  ===  u * (v mod m) ? 
-        __gcry_mpi_mulm = function BigInt_MPI_MULTMOD(w, u, v, m){
-          var bi_u = mpi2bigint(u);
-          var bi_v = mpi2bigint(v);
-          var bi_m = mpi2bigint(m);
-          //faster when v < u (and gives correct value!)
-          var result = BI.greater(bi_u,bi_v) ? BI.multMod(bi_u,bi_v,bi_m) :BI.multMod(bi_v,bi_u,bi_m);
-          bigint2mpi(w,result);
-        };
-        */
+
         __gcry_mpi_mulpowm = globalScope['Module']['__gcry_mpi_mulpowm'] = (function (mpi_r,mpi_array_base,mpi_array_exp,mpi_m){
             var indexer = 1;
             var mpi1, mpi2, bi_m,bi_result;
@@ -159,4 +122,5 @@ Module['preRun'].push(function(){
             bi_result = BigInt["mod"](bi_result,bi_m);
             bigint2mpi(mpi_r,bi_result);
         });
+ 
 });

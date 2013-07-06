@@ -1,5 +1,13 @@
-this['Module'] = Module = {};
-Module["preRun"] = [];
+var Random = Random || require("random");
+  
+try {
+  this['Module'] = Module;
+  Module.test;
+} catch(e) {
+  this['Module'] = Module = {};
+}
+
+Module["preRun"] = Module["preRun"] || [];
 
 /* emcc is generating this code when libgpg-error is compiled to js.. :(
 __ATINIT__ = __ATINIT__.concat([
@@ -9,8 +17,6 @@ __ATINIT__ = __ATINIT__.concat([
 function _i32______gpg_err_init_to_void_____(){};//workaround
 
 Module['preRun'].push(function(){
-    var Random = require("random.js");
-    
     FS.init();
     var devFolder = FS.findObject("/dev") || Module['FS_createFolder']("/","dev",true,true);
 
