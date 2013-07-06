@@ -9,16 +9,16 @@ __ATINIT__ = __ATINIT__.concat([
 function _i32______gpg_err_init_to_void_____(){};//workaround
 
 Module['preRun'].push(function(){
-    require("bigint");
-
+    var Random = require("random.js");
+    
     FS.init();
     var devFolder = FS.findObject("/dev") || Module['FS_createFolder']("/","dev",true,true);
 
     Module['FS_createDevice'](devFolder,"random",(function(){
-      return Math.randomByte();
+      return Random.getByte();
     }));
 
     Module['FS_createDevice'](devFolder,"urandom",(function(){
-      return Math.randomByte();
+      return Random.getByte();
     }));
 });
