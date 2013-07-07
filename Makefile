@@ -8,13 +8,13 @@ FASTMPI= --pre-js ./src/fast_mpi.js
 OPTIMISATION = -O2 --closure 0 --llvm-opts 1 --llvm-lto 0 -s ASM_JS=0
 OPTIMISATION_CHROME = -O1 --closure 0 --llvm-opts 0 --llvm-lto 0 -s ASM_JS=0
 
-TEST_OBJS=benchmark.o basic.o pubkey.o keygen.o prime.o ac-data.o ac.o ac-schemes.o curves.o \
-    fips186-dsa.o fipsdrv.o hmac.o mpitests.o pkcs1v2.o random.o register.o rsacvt.o t-kdf.o \
-    t-mpi-bit.o tsexp.o version.o
+TEST_OBJS=benchmark.js basic.js pubkey.js keygen.js prime.js ac-data.js ac.js ac-schemes.js curves.js \
+    fips186-dsa.js fipsdrv.js hmac.js mpitests.js pkcs1v2.js random.js register.js rsacvt.js t-kdf.js \
+    t-mpi-bit.js tsexp.o version.js
 
 all: libotr-test test
 
-test: basic.o pubkey.o random.o
+test: basic.js pubkey.js random.js
 	
 test-all: $(TEST_OBJS)
 
@@ -23,19 +23,23 @@ libotr-test:
 	$(EMCC) src/libotr-test.c -o tests/libotr-test.js -I./build/include --embed-file keys/alice.keys \
          $(LIBS) $(OTR) $(GCRYPT) $(FASTMPI) $(OPTIMISATION)
 
-run-test-all: $(TEST_OBJS:.o=.run)
-	echo "-- ran all tests --"
+run-test-all: $(TEST_OBJS:.js=.run-silent)
 
 run-test: basic.run pubkey.run random.run
-	echo "-- ran basic tests --"
 
 clean:
 	rm -fr tests/*
 
-%.o:
+%.js:
 	mkdir -p tests/
-	$(EMCC) $(GCRYPT_BUILD)/tests/$(@) -o tests/$(@:.o=)-fast.js $(LIBS) $(GCRYPT) $(OPTIMISATION) $(FASTMPI)
+	$(EMCC) $(GCRYPT_BUILD)/tests/$(@:.js=.o) -o tests/$(@) $(LIBS) $(GCRYPT) $(OPTIMISATION) $(FASTMPI)
 
 %.run:
-	node tests/$(@:.run=)-fast --verbose
+	node tests/$(@:.run=) --verbose
 
+%.run-silent:
+	node tests/$(@:.run-silent=)
+
+web:
+	mkdir -p tests/
+	$(EMCC) $(GCRYPT_BUILD)/tests/basic.o -o tests/basic-web.js $(LIBS) $(GCRYPT) $(OPTIMISATION_CHROME) $(FASTMPI)

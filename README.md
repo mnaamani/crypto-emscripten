@@ -43,6 +43,11 @@ To build and run all the libgcrypt tests:
 
       make test-all run-test-all
 
+To run the benchmark
+
+      make benchmark.js
+      node tests/benchmark.js
+
 See Also
 
 - *[OTR4-em][7]* Off the Record Messaging npm module.
