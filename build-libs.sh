@@ -2,7 +2,7 @@
 
 #library versions
 LIBGPG_ERROR_VERSION="1.10"
-LIBGCRYPT_VERSION="1.5.0"
+LIBGCRYPT_VERSION="1.5.2"
 LIBOTR_VERSION="4.0.0"
 
 
@@ -29,7 +29,6 @@ LLVM_ROOT=`${EMSCRIPTEN}/em-config LLVM_ROOT`
 export CPP="${LLVM_ROOT}/clang -E"
 
 mkdir -p build
-cp src/rndlinux.c build/rndlinux.c
 
 pushd build
 
@@ -80,7 +79,6 @@ then
     tar xjf "libgcrypt-${LIBGCRYPT_VERSION}.tar.bz2"
     pushd "libgcrypt-${LIBGCRYPT_VERSION}"
     BASEDIR=$(dirname $(pwd))
-    cp ${BASEDIR}/rndlinux.c random/rndlinux.c
     ${EMSCRIPTEN}/emconfigure ./configure --prefix=${BASEDIR} --with-gpg-error-prefix=${BASEDIR} --disable-asm --enable-static --disable-shared
     mv config.h config.h.original
     sed -e "s:#define HAVE_SYSLOG 1::" \
