@@ -83,8 +83,6 @@ then
     mv config.h config.h.original
     sed -e "s:#define HAVE_SYSLOG 1::" \
         -e "s:#define HAVE_SYS_SELECT_H 1::" config.h.original > config.h
-    mv mpi/mpi-internal.h mpi/mpi-internal.h.original
-    sed -e 's:#include "mpi-inline.h"::' mpi/mpi-internal.h.original > mpi/mpi-internal.h
     make
     make install
     popd
