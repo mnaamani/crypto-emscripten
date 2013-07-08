@@ -75,9 +75,16 @@ Module['preRun'].push(function(){
             bigint2mpi(mpi_r, BigInt["mod"](x,n));
         });
         
+        var original_powm = __gcry_mpi_powm;
         __gcry_mpi_powm = globalScope['Module']['__gcry_mpi_powm'] = (function (w, b, e, m){
-          var bi_base = mpi2bigint(b);
           var bi_expo = mpi2bigint(e);
+          //elliptic curves exponents 2 or 3, (y^2 = x^3 + ax + b)
+          if(bi_expo[0]==2 || bi_expo[0]==3){
+            original_powm(w,b,e,m); //faster for small exponents.
+            return;
+          }
+          //RSA and DSA use large exponents.. 
+          var bi_base = mpi2bigint(b);
           var bi_mod  = mpi2bigint(m);
           var result = BigInt["powMod"](bi_base,bi_expo,bi_mod);
           bigint2mpi(w,result);
