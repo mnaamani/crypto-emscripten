@@ -8,19 +8,10 @@ A build script to compile [GNU Libgcrypt][1] and [Off-the-Record Messaging][2] u
 [3]: http://emscripten.org "Emscripten"
 
 
-#### PublicKey crypto boosters
-
-The most compute intensive of libgcrypt's *mpi* functions are overidden with a javascript implementation using [bigint.js][4] for a significant performance boost of the public key crypto.
-*   _gcry_mpi_mod
-*   _gcry_mpi_powm
-*   _gcry_mpi_invm
-*   _gcry_mpi_mulpowm
-
 #### A cryptographically secure pseudo-random number generator (CSPRNG)
 
-The */dev/random* and */dev/urandom* virtual devices provide a stream of random bytes from generated using salsa20 seeded from crypto.getRandomValues(), based off Arlo's [OTR javascript library][5]
-[4]: http://leemon.com/crypto/BigInt.html "BigInt"
-[5]: https://github.com/arlolra/otr "OTR"
+The */dev/random* and */dev/urandom* virtual devices provide a stream of random bytes generated using salsa20 seeded from crypto.getRandomValues() (browser) or crypto,randomBytes() (nodejs), based off Arlo's [OTR javascript library][4]
+[4]: https://github.com/arlolra/otr "OTR"
 
 #### Building
 [Setup Emscripten](https://github.com/kripken/emscripten/wiki/Tutorial) on your system. 
