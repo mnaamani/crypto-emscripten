@@ -12,8 +12,7 @@
       /* the canvas *must not* have any border or padding, or mouse coords will be wrong */
       canvas.emscripten { border: 0px none; }
     </style>
-  <script src="../node_modules/salsa20.js"></script>
-  <script src="../node_modules/random.js"></script>
+  <script src="../node_modules/bigint.js"></script>
   </head>
   <body>
     <hr/>
@@ -46,6 +45,7 @@
           element.value = ''; // clear browser cache
           return function(text) {
             text = Array.prototype.slice.call(arguments).join(' ');
+            console.log(text);
             // These replacements are necessary if you render to raw HTML
             //text = text.replace(/&/g, "&amp;");
             //text = text.replace(/</g, "&lt;");
