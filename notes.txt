@@ -1,0 +1,29 @@
+Optimisation notes..
+
+-O2 --llvm-opts 1 --llvm-lto 0  
+    For best performance with ciphers and ECC
+-O2 --llvm-opts 1 --llvm-lto 0  -s ASM_JS=1
+    good performance with ciphers and ECC (except for TWOFISH128,SERPENT)
+
+In both above cases RSA and DSA are very slow... 
+so we have to use the fast_mpi code 
+--pre-js ./src/fast_mpi.js
+ECC however becomes slow when using fast_mpi
+
+
+Browsers.. all using --llvm-opts 1 --llvm-lto 0
+
+-O2 --closure 1 -s ASM_JS=1   (works for all browsers...) (no fast_mpi)
+-O2 --closure 0 -s ASM_JS=1   (works for all browsers...) (no fast_mpi)
+
+-O2 --closure 0 -s ASM_JS=0 without fastmpi (works in node and firefox, hangs in chrome)--> use -O1 for chrome
+-O2 --closure 0 -s ASM_JS=0 with fastmpi -- (works in node and firefox, fails in chrome)--> use -O1 for chrome
+
+-O2 --closure 1 -s ASM_JS=0 with fastmpi --> fails (functions exported functions not found...) need to test with EXPORTED_FUNCTIONS !??
+-O2 --closure 1 -s ASM_JS=0 without fastmpi --> missing names... (put generated code in a closure)=same problem.
+-O1 --closure 1 -s ASM_JS=0 same problems...
+
+//using -O1 chrome always slower than firefox..
+-O1 --closure 0 -s ASM_JS=0 works.. use with fast_mpi
+-O1 --closure 0 -s ASM_JS=1 works.. slow (cant use fast_mpi)
+-O1 --closure 1 -s ASM_JS=1 works...slow (cant use fast_mpi)

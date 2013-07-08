@@ -5,8 +5,10 @@ LIBS= -L./build/lib
 GCRYPT= -lgcrypt -lgpg-error
 OTR= -lotr
 NODE= --pre-js ./src/pre-node.js
-PRE= --pre-js ./src/pre.js
-OPTIMISATION = -O2 --closure 1 --llvm-opts 1 --llvm-lto 0 -s ASM_JS=1
+PRE= --pre-js ./src/pre.js --pre-js ./src/fast_mpi.js
+#see notes.txt for best options to use
+OPTIMISATION= -O2 --llvm-opts 1 --llvm-lto 0 -s ASM_JS=0 --closure 0
+WEB= -O1 --llvm-opts 1 --llvm-lto 0 -s ASM_JS=0 --closure 0
 
 TEST_OBJS=benchmark.js basic.js pubkey.js keygen.js prime.js ac-data.js ac.js ac-schemes.js curves.js \
     fips186-dsa.js fipsdrv.js hmac.js mpitests.js pkcs1v2.js random.js register.js rsacvt.js t-kdf.js \
@@ -42,5 +44,5 @@ clean:
 
 web:
 	mkdir -p tests/
-	$(EMCC) $(GCRYPT_BUILD)/tests/basic.o -o tests/basic.html $(LIBS) $(GCRYPT) $(OPTIMISATION) $(PRE) --shell-file ./src/shell.html
+	$(EMCC) $(GCRYPT_BUILD)/tests/basic.o -o tests/basic.html $(LIBS) $(GCRYPT) $(WEB) $(PRE) --shell-file ./src/shell.html
 

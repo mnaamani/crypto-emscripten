@@ -16,15 +16,15 @@
  DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-if(!this['Module']){
-    this['Module'] = Module = {};
-    this['Module']["preRun"]=[];
-}
-var BigInt = BigInt || require("bigint");
+
+try{
+Module["BigInt"]= this["BigInt"] || require("bigint");
+}catch(e){}
 
 Module['preRun'].push(function(){
+    if(typeof asm !== 'undefined') return;
     var gcry_ = {};
-
+    var BigInt = Module["BigInt"];
     /*
      * convert a gcry_mpi_t to a BigInt
      */
