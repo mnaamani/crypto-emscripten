@@ -8,12 +8,7 @@ A build script to compile [GNU Libgcrypt][1] and [Off-the-Record Messaging][2] u
 [3]: http://emscripten.org "Emscripten"
 
 
-#### A cryptographically secure pseudo-random number generator (CSPRNG)
-
-The */dev/random* and */dev/urandom* virtual devices provide a stream of random bytes generated using salsa20 seeded from crypto.getRandomValues() (browser) or crypto,randomBytes() (nodejs), based off Arlo's [OTR javascript library][4]
-[4]: https://github.com/arlolra/otr "OTR"
-
-#### Building
+### Building the libraries
 [Setup Emscripten](https://github.com/kripken/emscripten/wiki/Tutorial) on your system. 
 
 Run the build script (it will try to find emscripten in the following locations; *path specified on the command line*, *EMSCRIPTEN_ROOT* environment variable, and finally in from the config file *~/.emscripten*.)
@@ -41,9 +36,9 @@ To run the benchmark
 
 See Also
 
-- *[OTR4-em][7]* Off the Record Messaging npm module.
-- *[otrTalk][8]* P2P Off the Record chat application.
+- *[OTR4-em][4]* Off the Record Messaging npm module.
+- *[otrTalk][5]* P2P Off the Record chat application.
 
-[7]: https://github.com/mnaamani/otr4-em
-[8]: https://github.com/mnaamani/node-otr-talk
+[4]: https://github.com/mnaamani/otr4-em
+[5]: https://github.com/mnaamani/node-otr-talk
 
