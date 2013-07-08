@@ -1,30 +1,21 @@
-var Random = Random || require("random");
-  
-try {
-  this['Module'] = Module;
-  Module.test;
-} catch(e) {
-  this['Module'] = Module = {};
-}
-
+Module["Random"] = this["Random"] || require("random"); 
 Module["preRun"] = Module["preRun"] || [];
 
-/* emcc is generating this code when libgpg-error is compiled to js.. :(
-__ATINIT__ = __ATINIT__.concat([
-  { func: _i32______gpg_err_init_to_void_____ }
-]);
-*/
-function _i32______gpg_err_init_to_void_____(){};//workaround
+(function(){
+    this["_i32______gpg_err_init_to_void_____"]=function(){}
+}).call(null);
+
+function _i32______gpg_err_init_to_void_____(){}
 
 Module['preRun'].push(function(){
     FS.init();
     var devFolder = FS.findObject("/dev") || Module['FS_createFolder']("/","dev",true,true);
 
     Module['FS_createDevice'](devFolder,"random",(function(){
-      return Random.getByte();
+      return Module["Random"]["getByte"]();
     }));
 
     Module['FS_createDevice'](devFolder,"urandom",(function(){
-      return Random.getByte();
+      return Module["Random"]["getByte"]();
     }));
 });
