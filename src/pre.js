@@ -6,7 +6,7 @@ Module["preRun"] = Module["preRun"] || [];
 
 (function(){
     this["_i32______gpg_err_init_to_void_____"]=function(){}
-}).call(null);
+}).call(globalScope);
 
 function _i32______gpg_err_init_to_void_____(){}
 
