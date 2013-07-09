@@ -91,6 +91,9 @@
       
       Module.arguments = ["--verbose"];
     </script>
-    <script type='text/javascript'>{{{ SCRIPT_CODE }}}</script>
+    <script type='text/javascript'>(function(){
+        {{{ SCRIPT_CODE }}}
+    })({"Module":Module,"crypto":crypto,"BigInt":BigInt});
+    </script>
   </body>
 </html>
