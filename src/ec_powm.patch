@@ -1,0 +1,11 @@
+229c229,236
+<   mpi_powm (w, b, e, ctx->p);
+---
+>   if(mpi_cmp_ui(e,(unsigned long)2)==0){
+>     mpi_mul(w,b,b);
+>     mpi_mod(w,w,ctx->p);
+>   }else if(mpi_cmp_ui(e,(unsigned long)3)==0){
+>     mpi_mul(w,b,b);
+>     mpi_mul(w,w,b);
+>     mpi_mod(w,w,ctx->p);
+>   }else mpi_powm (w, b, e, ctx->p);

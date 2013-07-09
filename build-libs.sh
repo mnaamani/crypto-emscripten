@@ -30,6 +30,8 @@ export CPP="${LLVM_ROOT}/clang -E"
 
 mkdir -p build
 
+cp src/ec_powm.patch build/
+
 pushd build
 
 # download libgpg-error
@@ -53,51 +55,41 @@ then
   curl -O "http://www.cypherpunks.ca/otr/libotr-${LIBOTR_VERSION}.tar.gz"
 fi
 
-#always rebuild from scratch
-rm "libgpg-error-${LIBGPG_ERROR_VERSION}/config.status"
-rm "libgcrypt-${LIBGCRYPT_VERSION}/config.status"
-rm "libotr-${LIBOTR_VERSION}/config.status"
+tar xjf "libgpg-error-${LIBGPG_ERROR_VERSION}.tar.bz2"
+tar xjf "libgcrypt-${LIBGCRYPT_VERSION}.tar.bz2"
+tar xzf "libotr-${LIBOTR_VERSION}.tar.gz"
 
 #configure and build libgpg-error
-if [ ! -e "libgpg-error-${LIBGPG_ERROR_VERSION}/config.status" ]
-then
-	tar xjf "libgpg-error-${LIBGPG_ERROR_VERSION}.tar.bz2"
-	pushd "libgpg-error-${LIBGPG_ERROR_VERSION}"
-	BASEDIR=$(dirname $(pwd))
-	${EMSCRIPTEN}/emconfigure ./configure --prefix=${BASEDIR} --enable-static --disable-shared
-    mv src/Makefile src/Makefile.original
-    sed -e 's:\$(CC_FOR_BUILD) -I\. -I\$(srcdir) -o $@:\$(CC_FOR_BUILD) -I. -I\$(srcdir) -o $@.js:' \
-        -e 's:\./mkerrcodes:node ./mkerrcodes.js:' src/Makefile.original > src/Makefile
-    make
-    make install
-	popd
-fi
+pushd "libgpg-error-${LIBGPG_ERROR_VERSION}"
+BASEDIR=$(dirname $(pwd))
+${EMSCRIPTEN}/emconfigure ./configure --prefix=${BASEDIR} --enable-static --disable-shared
+mv src/Makefile src/Makefile.original
+sed -e 's:\$(CC_FOR_BUILD) -I\. -I\$(srcdir) -o $@:\$(CC_FOR_BUILD) -I. -I\$(srcdir) -o $@.js:' \
+    -e 's:\./mkerrcodes:node ./mkerrcodes.js:' src/Makefile.original > src/Makefile
+make
+make install
+popd
+
+#patch ec_powm function to use multiplication instead of exponentiation
+patch "libgcrypt-${LIBGCRYPT_VERSION}/mpi/ec.c" ec_powm.patch
 
 #configure and build-libgcrypt
-if [ ! -e "libgcrypt-${LIBGCRYPT_VERSION}/config.status" ]
-then
-    tar xjf "libgcrypt-${LIBGCRYPT_VERSION}.tar.bz2"
-    pushd "libgcrypt-${LIBGCRYPT_VERSION}"
-    BASEDIR=$(dirname $(pwd))
-    ${EMSCRIPTEN}/emconfigure ./configure --prefix=${BASEDIR} --with-gpg-error-prefix=${BASEDIR} --disable-asm --enable-static --disable-shared
-    mv config.h config.h.original
-    sed -e "s:#define HAVE_SYSLOG 1::" \
-        -e "s:#define HAVE_SYS_SELECT_H 1::" config.h.original > config.h
-    make
-    make install
-    popd
-fi
+pushd "libgcrypt-${LIBGCRYPT_VERSION}"
+BASEDIR=$(dirname $(pwd))
+${EMSCRIPTEN}/emconfigure ./configure --prefix=${BASEDIR} --with-gpg-error-prefix=${BASEDIR} --disable-asm --enable-static --disable-shared
+mv config.h config.h.original
+sed -e "s:#define HAVE_SYSLOG 1::" \
+    -e "s:#define HAVE_SYS_SELECT_H 1::" config.h.original > config.h
+make
+make install
+popd
 
 #configure and build libotr
-if [ ! -e "libotr-${LIBOTR_VERSION}/config.status" ]
-then
-    tar xzf "libotr-${LIBOTR_VERSION}.tar.gz"
-    pushd "libotr-${LIBOTR_VERSION}"
-    BASEDIR=$(dirname $(pwd))
-    ${EMSCRIPTEN}/emconfigure ./configure --prefix=${BASEDIR} --with-libgcrypt-prefix=${BASEDIR} --disable-static --enable-shared
-    make
-    make install
-    popd
-fi
+pushd "libotr-${LIBOTR_VERSION}"
+BASEDIR=$(dirname $(pwd))
+${EMSCRIPTEN}/emconfigure ./configure --prefix=${BASEDIR} --with-libgcrypt-prefix=${BASEDIR} --disable-static --enable-shared
+make
+make install
+popd
 
 popd
