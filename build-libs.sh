@@ -29,8 +29,8 @@ LLVM_ROOT=`${EMSCRIPTEN}/em-config LLVM_ROOT`
 export CPP="${LLVM_ROOT}/clang -E"
 
 mkdir -p build
-
-cp src/ec_powm.patch build/
+mkdir -p build/patches
+cp src/patches/* build/patches/
 
 pushd build
 
@@ -71,7 +71,10 @@ make install
 popd
 
 #patch ec_powm function to use multiplication instead of exponentiation
-patch "libgcrypt-${LIBGCRYPT_VERSION}/mpi/ec.c" ec_powm.patch
+patch "libgcrypt-${LIBGCRYPT_VERSION}/mpi/ec.c" patches/ec_powm.patch
+
+#override powm, mulpowm, and invmod
+cp patches/mpi-*.c "libgcrypt-${LIBGCRYPT_VERSION}/mpi/"
 
 #configure and build-libgcrypt
 pushd "libgcrypt-${LIBGCRYPT_VERSION}"
