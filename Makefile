@@ -5,13 +5,7 @@ LIBS= -L./build/lib
 GCRYPT= -lgcrypt -lgpg-error
 OTR= -lotr
 NODE= --pre-js ./src/pre-node.js
-#see notes.txt for best options to use
-OPTIMISATION= -O2 --llvm-opts 1 --llvm-lto 0 -s ASM_JS=1 --closure 1 \
-    -s EXPORTED_FUNCTIONS="['_main','_malloc','_free','__gcry_strerror','__gcry_mpi_new','__gcry_mpi_set','__gcry_mpi_release', \
-       '__gcry_mpi_scan','__gcry_mpi_print']" -s IGNORED_FUNCTIONS="['__gcry_mpi_powm','__gcry_mpi_mulpowm','__gcry_mpi_invmod']" \
-        --pre-js ./src/pre.js --pre-js ./src/fast_mpi.js
-
-OPTIMISATION_LIB= -O2 --llvm-opts 1 --llvm-lto 0 -s ASM_JS=1 --closure 1 --js-library src/library_gcrypt.js \
+OPTIMISATION= -O2 --llvm-opts 1 --llvm-lto 0 -s ASM_JS=1 --closure 1 --js-library src/library_gcrypt.js \
     -s LINKABLE=1 -s EXPORTED_FUNCTIONS="['_main','__gcry_mpi_new','__gcry_mpi_set','__gcry_mpi_release','__gcry_mpi_print','__gcry_mpi_scan','__gcry_strerror']"
 
 TEST_OBJS=benchmark.js basic.js pubkey.js keygen.js prime.js ac-data.js ac.js ac-schemes.js curves.js \
@@ -48,8 +42,8 @@ clean:
 
 web:
 	mkdir -p tests/
-	$(EMCC) $(GCRYPT_BUILD)/tests/basic.o -o tests/basic.html $(LIBS) $(GCRYPT) $(OPTIMISATION_LIB) --shell-file ./src/shell.html
+	$(EMCC) $(GCRYPT_BUILD)/tests/basic.o -o tests/basic.html $(LIBS) $(GCRYPT) $(OPTIMISATION) --shell-file ./src/shell.html
 
 bench:
 	mkdir -p tests/
-	$(EMCC) $(GCRYPT_BUILD)/tests/benchmark.o -o tests/benchmark.js $(LIBS) $(GCRYPT) $(NODE) $(OPTIMISATION_LIB)
+	$(EMCC) $(GCRYPT_BUILD)/tests/benchmark.o -o tests/benchmark.js $(LIBS) $(GCRYPT) $(NODE) $(OPTIMISATION)

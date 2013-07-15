@@ -6,21 +6,14 @@ for nodejs and firefox:
 -O2 --llvm-opts 1 --llvm-lto 0  -s ASM_JS=1
     same performance (except for SERPENT .. investigate)
 
-In both above cases RSA and DSA are very slow... 
-so we have to use the fast_mpi code 
---pre-js ./src/fast_mpi.js
-
-
 Browsers.. all using --llvm-opts 1 --llvm-lto 0
 
 -O2 --closure 1 -s ASM_JS=1   (works for all browsers...)
 -O2 --closure 0 -s ASM_JS=1   (works for all browsers...) 
 
--O2 --closure 0 -s ASM_JS=0 without fastmpi (works in node and firefox, hangs in chrome)
--O2 --closure 0 -s ASM_JS=0 with fastmpi -- (works in node and firefox, fails in chrome)
+-O2 --closure 0 -s ASM_JS=0   (works for all browsers...)
 
-//using -O1 chrome always slower than firefox..
--O1 --closure 0 -s ASM_JS=0 works.. use with fast_mpi
+-O1 --closure 0 -s ASM_JS=0 works.. slow
 -O1 --closure 0 -s ASM_JS=1 works.. slow
 -O1 --closure 1 -s ASM_JS=1 works...slow
 
