@@ -1,6 +1,4 @@
-/*
- *  BigInt and CSPRNG from: https://github.com/arlolra/otr
- */
+// adapted from - https://github.com/arlolra/otr
 ;(function () {
 
   var root = this
