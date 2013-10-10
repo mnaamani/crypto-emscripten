@@ -1,6 +1,6 @@
 EMCC= `./find-emcc.py`/emcc
 
-GCRYPT_BUILD= build/libgcrypt-1.5.2
+GCRYPT_BUILD= build/libgcrypt-1.5.3
 LIBS= -L./build/lib
 GCRYPT= -lgcrypt -lgpg-error
 OTR= -lotr

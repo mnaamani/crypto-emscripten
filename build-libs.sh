@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #library versions
-LIBGPG_ERROR_VERSION="1.10"
-LIBGCRYPT_VERSION="1.5.2"
+LIBGPG_ERROR_VERSION="1.12"
+LIBGCRYPT_VERSION="1.5.3"
 LIBOTR_VERSION="4.0.0"
 
 
@@ -62,7 +62,7 @@ tar xzf "libotr-${LIBOTR_VERSION}.tar.gz"
 #configure and build libgpg-error
 pushd "libgpg-error-${LIBGPG_ERROR_VERSION}"
 BASEDIR=$(dirname $(pwd))
-${EMSCRIPTEN}/emconfigure ./configure --prefix=${BASEDIR} --enable-static --disable-shared
+${EMSCRIPTEN}/emconfigure ./configure --prefix=${BASEDIR} --enable-static --disable-shared --disable-nls
 mv src/Makefile src/Makefile.original
 sed -e 's:\$(CC_FOR_BUILD) -I\. -I\$(srcdir) -o $@:\$(CC_FOR_BUILD) -I. -I\$(srcdir) -o $@.js:' \
     -e 's:\./mkerrcodes:node ./mkerrcodes.js:' src/Makefile.original > src/Makefile
@@ -90,7 +90,7 @@ popd
 #configure and build libotr
 pushd "libotr-${LIBOTR_VERSION}"
 BASEDIR=$(dirname $(pwd))
-${EMSCRIPTEN}/emconfigure ./configure --prefix=${BASEDIR} --with-libgcrypt-prefix=${BASEDIR} --disable-static --enable-shared
+${EMSCRIPTEN}/emconfigure ./configure --prefix=${BASEDIR} --with-libgcrypt-prefix=${BASEDIR} --disable-static --enable-shared --disable-gcc-hardening
 make
 make install
 popd
