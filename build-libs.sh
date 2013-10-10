@@ -52,7 +52,7 @@ fi
 if [ ! -e "libotr-${LIBOTR_VERSION}.tar.gz" ]
 then
   echo "Downloading libotr-${LIBOTR_VERSION}.tar.gz"
-  curl -O "http://www.cypherpunks.ca/otr/libotr-${LIBOTR_VERSION}.tar.gz"
+  curl -O "https://otr.cypherpunks.ca/libotr-${LIBOTR_VERSION}.tar.gz"
 fi
 
 tar xjf "libgpg-error-${LIBGPG_ERROR_VERSION}.tar.bz2"
