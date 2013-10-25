@@ -54,9 +54,8 @@ main(){
     initialise();
     printf("libotr %s\n",otrl_version());
     OtrlUserState userstate = otrl_userstate_create();
-    test_read_file(userstate,"./keys/alice.keys","alice@telechat.org","telechat");
-    test_generate_key(userstate,"./keys/alice.keys","alice@telechat.org","telechat");
-    test_read_file(userstate,"./keys/alice.keys","alice@telechat.org","telechat");
+    test_generate_key(userstate,"alice.keys","alice@telechat.org","telechat");
+    test_read_file(userstate,"alice.keys","alice@telechat.org","telechat");
     otrl_userstate_free(userstate);
     return 0;
 }

@@ -20,7 +20,7 @@ test-all: $(TEST_OBJS)
 
 libotr-test:
 	mkdir -p tests/
-	$(EMCC) src/libotr-test.c -o tests/libotr-test.js -I./build/include --embed-file keys/alice.keys \
+	$(EMCC) src/libotr-test.c -o tests/libotr-test.js -I./build/include \
          $(LIBS) $(OTR) $(GCRYPT) $(NODE) $(OPTIMISATION)
 
 run-test-all: $(TEST_OBJS:.js=.run-silent)
