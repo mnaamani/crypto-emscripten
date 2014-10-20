@@ -57,7 +57,7 @@ fi
 
 tar xjf "libgpg-error-${LIBGPG_ERROR_VERSION}.tar.bz2"
 tar xjf "libgcrypt-${LIBGCRYPT_VERSION}.tar.bz2"
-tar xzf "libotr-${LIBOTR_VERSION}.tar.gz"
+tar xzf "libotr-${LIBOTR_VERSION}-rc1.tar.gz"
 
 #configure and build libgpg-error
 pushd "libgpg-error-${LIBGPG_ERROR_VERSION}"
