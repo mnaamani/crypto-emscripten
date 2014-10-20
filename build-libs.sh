@@ -3,7 +3,7 @@
 #library versions
 LIBGPG_ERROR_VERSION="1.12"
 LIBGCRYPT_VERSION="1.5.3"
-LIBOTR_VERSION="4.0.0"
+LIBOTR_VERSION="4.1.0"
 
 
 #commandline argument
@@ -49,10 +49,10 @@ then
 fi
 
 # download libotr
-if [ ! -e "libotr-${LIBOTR_VERSION}.tar.gz" ]
+if [ ! -e "libotr-${LIBOTR_VERSION}-rc1.tar.gz" ]
 then
-  echo "Downloading libotr-${LIBOTR_VERSION}.tar.gz"
-  curl -O "https://otr.cypherpunks.ca/libotr-${LIBOTR_VERSION}.tar.gz"
+  echo "Downloading libotr-${LIBOTR_VERSION}-rc1.tar.gz"
+  curl -O "https://otr.cypherpunks.ca/libotr-${LIBOTR_VERSION}-rc1.tar.gz"
 fi
 
 tar xjf "libgpg-error-${LIBGPG_ERROR_VERSION}.tar.bz2"
