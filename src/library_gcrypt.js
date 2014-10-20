@@ -5,8 +5,8 @@ mergeInto(LibraryManager.library, {
   $GCRYPT__deps: ['i32______gpg_err_init_to_void_____','$BIGINT'],
   $GCRYPT__postset:
     '__ATINIT__.push({ func: function() {'+
-    '   if(!FS.init.initialized) FS.init();'+
-    '   var devFolder = FS.findObject("/dev") || Module["FS_createFolder"]("/","dev",true,true);'+
+    '  //emscripten will use crypto module/object to generate a secure random if found. \n'+
+    '  //we will fail with an exception if crypto object not found. do not fallback to Math.Random! \n'+
     '   var crypto_object;'+
     '   if(typeof window !== "undefined" && typeof window.crypto !== "undefined"){'+
     '       crypto_object = window.crypto;'+
@@ -15,25 +15,10 @@ mergeInto(LibraryManager.library, {
     '   }else{'+
     '       crypto_object = Module["crypto"];'+
     '   }'+
-    '   var randomByte = (function(crypto){'+
-    '       if(!crypto) throw new Error("no source of random data found!");'+
-    '       if(crypto["randomBytes"]) {'+
-    '          return (function(){'+
-    '            return crypto["randomBytes"](1)[0];'+
-    '          });'+
-    '       }else{'+
-    '         return (function(){'+
-    '            var buf = new Uint8Array(1);'+
-    '            crypto["getRandomValues"](buf);'+
-    '            return buf[0];'+
-    '         });'+
-    '       }'+
-    '   })( crypto_object );'+
-    '   Module["FS_createDevice"](devFolder,"random",randomByte);'+
-    '   Module["FS_createDevice"](devFolder,"urandom",randomByte);'+
+    '   if(!crypto_object) throw new Error("source of secure random data not found!");'+
     '}});',
   $GCRYPT: {},
-  
+
   _mpi2bigint__postset: '__mpi2bigint.buffer = allocate(4096, "i8", ALLOC_STATIC);',
   _mpi2bigint__deps:['$GCRYPT','_gcry_mpi_print','_gcry_strerror'],
   _mpi2bigint: function (mpi_ptr){
@@ -43,7 +28,7 @@ mergeInto(LibraryManager.library, {
      var mpi_str = Pointer_stringify(__mpi2bigint.buffer);
      return BIGINT["str2bigInt"](mpi_str,16);
    },
-   
+
    _bigint2mpi__postset: '__bigint2mpi.handle = allocate(1,"i32", ALLOC_STATIC);'+
                          '__bigint2mpi.buffer = allocate(4096,"i8", ALLOC_STATIC);',
    _bigint2mpi__deps: ['$GCRYPT','_gcry_mpi_scan','_gcry_strerror','_gcry_mpi_set','_gcry_mpi_release'],
@@ -58,7 +43,7 @@ mergeInto(LibraryManager.library, {
         __gcry_mpi_set(mpi_ptr,scanned_mpi_ptr);
         __gcry_mpi_release(scanned_mpi_ptr);
    },
-    
+
   override_gcry_mpi_powm__deps: ['$GCRYPT','_bigint2mpi','_mpi2bigint'],
   override_gcry_mpi_powm: function (mpi_w,mpi_b,mpi_e,mpi_m){
     //w = b^e mod m
@@ -68,7 +53,7 @@ mergeInto(LibraryManager.library, {
     var result = BIGINT["powMod"](bi_base,bi_expo,bi_mod);
     __bigint2mpi(mpi_w,result);
   },
-  
+
   override_gcry_mpi_mulpowm__deps: ['$GCRYPT','_bigint2mpi','_mpi2bigint'],
   override_gcry_mpi_mulpowm: function(mpi_r,mpi_array_base,mpi_array_exp,mpi_m){
     var indexer = 1;
@@ -96,7 +81,7 @@ mergeInto(LibraryManager.library, {
     bi_result = BIGINT["mod"](bi_result,bi_m);
     __bigint2mpi(mpi_r,bi_result);
   },
-  
+
   override_gcry_mpi_invm__deps: ['$GCRYPT','_bigint2mpi','_mpi2bigint'],
   override_gcry_mpi_invm: function(mpi_x,mpi_a,mpi_m){
     // (x**(-1) mod n)

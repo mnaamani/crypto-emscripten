@@ -6,7 +6,7 @@ GCRYPT= -lgcrypt -lgpg-error
 OTR= -lotr
 NODE= --pre-js ./src/pre-node.js
 OPTIMISATION= -O2 --llvm-opts 1 --llvm-lto 0 -s ASM_JS=1 --closure 1 --js-library src/library_gcrypt.js \
-    -s LINKABLE=1 -s EXPORTED_FUNCTIONS="['_main','__gcry_mpi_new','__gcry_mpi_set','__gcry_mpi_release','__gcry_mpi_print','__gcry_mpi_scan','__gcry_strerror']"
+    -s LINKABLE=1 -s EXPORTED_FUNCTIONS="['_main','__gcry_mpi_new','__gcry_mpi_set','__gcry_mpi_release','__gcry_mpi_print','__gcry_mpi_scan','__gcry_strerror']" --memory-init-file 0
 
 TEST_OBJS=benchmark.js basic.js pubkey.js keygen.js prime.js ac-data.js ac.js ac-schemes.js curves.js \
     fips186-dsa.js fipsdrv.js hmac.js mpitests.js pkcs1v2.js random.js register.js rsacvt.js t-kdf.js \
