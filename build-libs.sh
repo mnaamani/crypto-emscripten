@@ -25,9 +25,6 @@ then
   exit 1
 fi
 
-LLVM_ROOT=`${EMSCRIPTEN}/em-config LLVM_ROOT`
-export CPP="${LLVM_ROOT}/clang -E"
-
 mkdir -p build
 mkdir -p build/patches
 cp src/patches/* build/patches/
