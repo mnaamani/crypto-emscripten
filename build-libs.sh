@@ -49,15 +49,15 @@ then
 fi
 
 # download libotr
-if [ ! -e "libotr-${LIBOTR_VERSION}-rc1.tar.gz" ]
+if [ ! -e "libotr-${LIBOTR_VERSION}.tar.gz" ]
 then
-  echo "Downloading libotr-${LIBOTR_VERSION}-rc1.tar.gz"
-  curl -O "https://otr.cypherpunks.ca/libotr-${LIBOTR_VERSION}-rc1.tar.gz"
+  echo "Downloading libotr-${LIBOTR_VERSION}.tar.gz"
+  curl -O "https://otr.cypherpunks.ca/libotr-${LIBOTR_VERSION}.tar.gz"
 fi
 
 tar xjf "libgpg-error-${LIBGPG_ERROR_VERSION}.tar.bz2"
 tar xjf "libgcrypt-${LIBGCRYPT_VERSION}.tar.bz2"
-tar xzf "libotr-${LIBOTR_VERSION}-rc1.tar.gz"
+tar xzf "libotr-${LIBOTR_VERSION}.tar.gz"
 
 #configure and build libgpg-error
 pushd "libgpg-error-${LIBGPG_ERROR_VERSION}"
