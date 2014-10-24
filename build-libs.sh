@@ -2,7 +2,7 @@
 
 #library versions
 LIBGPG_ERROR_VERSION="1.12"
-LIBGCRYPT_VERSION="1.5.3"
+LIBGCRYPT_VERSION="1.6.2"
 LIBOTR_VERSION="4.1.0"
 
 
@@ -59,10 +59,11 @@ tar xzf "libotr-${LIBOTR_VERSION}.tar.gz"
 #configure and build libgpg-error
 pushd "libgpg-error-${LIBGPG_ERROR_VERSION}"
 BASEDIR=$(dirname $(pwd))
-${EMSCRIPTEN}/emconfigure ./configure --prefix=${BASEDIR} --enable-static --disable-shared --disable-nls "CFLAGS=-m32"
+${EMSCRIPTEN}/emconfigure ./configure --prefix=${BASEDIR} --enable-static --disable-shared --disable-nls --build=x86-unknown-linux --host=x86-unknown-linux --disable-threads --disable-optimization "CFLAGS=-m32"
 mv src/Makefile src/Makefile.original
 sed -e 's:\$(CC_FOR_BUILD) -I\. -I\$(srcdir) -o $@:\$(CC_FOR_BUILD) -I. -I\$(srcdir) -o $@.js:' \
     -e 's:\./mkerrcodes:node ./mkerrcodes.js:' src/Makefile.original > src/Makefile
+make clean
 make
 make install
 popd
@@ -71,15 +72,22 @@ popd
 patch "libgcrypt-${LIBGCRYPT_VERSION}/mpi/ec.c" patches/ec_powm.patch
 
 #override powm, mulpowm, and invmod
-cp patches/mpi-*.c "libgcrypt-${LIBGCRYPT_VERSION}/mpi/"
+cp patches/mpi-pow.c "libgcrypt-${LIBGCRYPT_VERSION}/mpi/"
+cp patches/mpi-mpow.c "libgcrypt-${LIBGCRYPT_VERSION}/mpi/"
+cp patches/mpi-inv.c "libgcrypt-${LIBGCRYPT_VERSION}/mpi/"
 
 #configure and build-libgcrypt
 pushd "libgcrypt-${LIBGCRYPT_VERSION}"
 BASEDIR=$(dirname $(pwd))
-${EMSCRIPTEN}/emconfigure ./configure --prefix=${BASEDIR} --with-gpg-error-prefix=${BASEDIR} --disable-asm --enable-static --disable-shared "CFLAGS=-m32"
+${EMSCRIPTEN}/emconfigure ./configure --prefix=${BASEDIR} --with-gpg-error-prefix=${BASEDIR} --disable-asm --enable-static --disable-shared --build=x86-unknown-linux --host=x86-unknown-linux "CFLAGS=-m32"
 mv config.h config.h.original
 sed -e "s:#define HAVE_SYSLOG 1::" \
     -e "s:#define HAVE_SYS_SELECT_H 1::" config.h.original > config.h
+
+mv doc/Makefile doc/Makefile.original
+sed -e 's:\$(CC_FOR_BUILD) -o $@ \$(srcdir)/yat2m.c:\gcc -o $@ \$(srcdir)/yat2m.c:' doc/Makefile.original > doc/Makefile
+
+make clean
 make
 make install
 popd
@@ -87,7 +95,8 @@ popd
 #configure and build libotr
 pushd "libotr-${LIBOTR_VERSION}"
 BASEDIR=$(dirname $(pwd))
-${EMSCRIPTEN}/emconfigure ./configure --prefix=${BASEDIR} --with-libgcrypt-prefix=${BASEDIR} --disable-static --enable-shared --disable-gcc-hardening "CFLAGS=-m32"
+${EMSCRIPTEN}/emconfigure ./configure --prefix=${BASEDIR} --with-libgcrypt-prefix=${BASEDIR} --disable-static --enable-shared --disable-gcc-hardening --build=x86-linux --host=x86-unknown-linux "CFLAGS=-m32"
+make clean
 make
 make install
 popd

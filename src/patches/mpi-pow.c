@@ -39,7 +39,7 @@ override_gcry_mpi_powm (gcry_mpi_t res,
  * RES = BASE ^ EXPO mod MOD
  */
 void
-gcry_mpi_powm (gcry_mpi_t res,
+_gcry_mpi_powm (gcry_mpi_t res,
                gcry_mpi_t base, gcry_mpi_t expo, gcry_mpi_t mod)
 {
   override_gcry_mpi_powm(res,base,expo,mod);

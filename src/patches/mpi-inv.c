@@ -33,7 +33,7 @@ override_gcry_mpi_invm( gcry_mpi_t x, gcry_mpi_t a, gcry_mpi_t n );
  *		1 = (a*x) mod n
  */
 int
-gcry_mpi_invm( gcry_mpi_t x, gcry_mpi_t a, gcry_mpi_t n )
+_gcry_mpi_invm( gcry_mpi_t x, gcry_mpi_t a, gcry_mpi_t n )
 {
     return override_gcry_mpi_invm(x,a,n);
 }
