@@ -29,6 +29,17 @@ mergeInto(LibraryManager.library, {
      return BIGINT["str2bigInt"](mpi_str,16);
    },
 
+  _mpi2bigintAbs__postset: '__mpi2bigintAbs.buffer = allocate(4096, "i8", ALLOC_STATIC);',
+  _mpi2bigintAbs__deps:['$GCRYPT','_gcry_mpi_print','_gcry_strerror'],
+  _mpi2bigintAbs: function (mpi_ptr){
+     //gcry_error_t gcry_mpi_print (enum gcry_mpi_format format, unsigned char *buffer, size_t buflen, size_t *nwritten, const gcry_mpi_t a)
+     var err = __gcry_mpi_print(4,__mpi2bigintAbs.buffer,4096,0,mpi_ptr);// 4 == HEX Format
+     assert(err==0,"mpi2bigint"+Pointer_stringify(__gcry_strerror(err)));
+     var mpi_str = Pointer_stringify(__mpi2bigintAbs.buffer);
+     if(mpi_str[0] === '-') mpi_str = mpi_str.substring(1);
+     return BIGINT["str2bigInt"](mpi_str,16);
+   },
+
    _bigint2mpi__postset: '__bigint2mpi.handle = allocate(1,"i32", ALLOC_STATIC);'+
                          '__bigint2mpi.buffer = allocate(4096,"i8", ALLOC_STATIC);',
    _bigint2mpi__deps: ['$GCRYPT','_gcry_mpi_scan','_gcry_strerror','_gcry_mpi_set','_gcry_mpi_release'],
@@ -44,10 +55,10 @@ mergeInto(LibraryManager.library, {
         __gcry_mpi_release(scanned_mpi_ptr);
    },
 
-  override_gcry_mpi_powm__deps: ['$GCRYPT','_bigint2mpi','_mpi2bigint'],
+  override_gcry_mpi_powm__deps: ['$GCRYPT','_bigint2mpi','_mpi2bigint','_mpi2bigintAbs'],
   override_gcry_mpi_powm: function (mpi_w,mpi_b,mpi_e,mpi_m){
     //w = b^e mod m
-    var bi_base = __mpi2bigint(mpi_b);
+    var bi_base = __mpi2bigintAbs(mpi_b);
     var bi_expo = __mpi2bigint(mpi_e);
     var bi_mod  = __mpi2bigint(mpi_m);
     var result = BIGINT["powMod"](bi_base,bi_expo,bi_mod);
