@@ -49,7 +49,8 @@ t-ed25519.run:
 
 web:
 	mkdir -p tests/
-	$(EMCC) $(GCRYPT_BUILD)/tests/basic.o -o tests/basic.html $(LIBS) $(GCRYPT) $(OPTIMISATION) --shell-file ./src/shell.html
+	cp node_modules/bigint.js tests/
+	$(EMCC) $(GCRYPT_BUILD)/tests/basic.o -o tests/web-test.html $(LIBS) $(GCRYPT) $(OPTIMISATION) --shell-file ./src/shell.html --pre-js src/pre.js --closure 0 --minify 0
 
 bench:
 	mkdir -p tests/
