@@ -59,7 +59,7 @@ tar xzf "libotr-${LIBOTR_VERSION}.tar.gz"
 #configure and build libgpg-error
 pushd "libgpg-error-${LIBGPG_ERROR_VERSION}"
 BASEDIR=$(dirname $(pwd))
-${EMSCRIPTEN}/emconfigure ./configure --prefix=${BASEDIR} --enable-static --disable-shared --disable-nls --disable-threads --disable-doc --build=x86-unknown-linux --host=x86-unknown-linux "CFLAGS=-m32"
+${EMSCRIPTEN}/emconfigure ./configure --prefix=${BASEDIR} --enable-shared --disable-static --disable-nls --disable-threads --disable-doc --host=x86-unknown-linux "CFLAGS=-m32"
 cp config.h src/root_config.h
 cp src/Makefile src/Makefile.original
 sed -e 's:\$(CC_FOR_BUILD) -I\. -I\$(srcdir) -o $@:\$(CC_FOR_BUILD) -I. -I\$(srcdir) -o $@.js:' \
@@ -94,7 +94,7 @@ cp patches/mpi-inv.c "libgcrypt-${LIBGCRYPT_VERSION}/mpi/"
 #configure and build-libgcrypt
 pushd "libgcrypt-${LIBGCRYPT_VERSION}"
 BASEDIR=$(dirname $(pwd))
-${EMSCRIPTEN}/emconfigure ./configure --prefix=${BASEDIR} --with-gpg-error-prefix=${BASEDIR} --disable-asm --enable-static --disable-shared --build=x86-unknown-linux --host=x86-unknown-linux "CFLAGS=-m32"
+${EMSCRIPTEN}/emconfigure ./configure --prefix=${BASEDIR} --with-gpg-error-prefix=${BASEDIR} --disable-asm --enable-shared --disable-static --host=x86-unknown-linux "CFLAGS=-m32"
 mv config.h config.h.original
 sed -e "s:#define HAVE_SYSLOG 1::" \
     -e "s:#define HAVE_SYS_SELECT_H 1::" config.h.original > config.h
@@ -110,7 +110,7 @@ popd
 #configure and build libotr
 pushd "libotr-${LIBOTR_VERSION}"
 BASEDIR=$(dirname $(pwd))
-${EMSCRIPTEN}/emconfigure ./configure --prefix=${BASEDIR} --with-libgcrypt-prefix=${BASEDIR} --disable-static --enable-shared --disable-gcc-hardening --build=x86-linux --host=x86-unknown-linux "CFLAGS=-m32"
+${EMSCRIPTEN}/emconfigure ./configure --prefix=${BASEDIR} --with-libgcrypt-prefix=${BASEDIR} --disable-static --enable-shared --disable-gcc-hardening --host=x86-unknown-linux "CFLAGS=-m32"
 make clean
 make
 make install
