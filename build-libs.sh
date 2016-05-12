@@ -2,9 +2,8 @@
 
 #library versions
 LIBGPG_ERROR_VERSION="1.22"
-LIBGCRYPT_VERSION="1.6.2"
+LIBGCRYPT_VERSION="1.7.0"
 LIBOTR_VERSION="4.1.1"
-
 
 #commandline argument
 EMSCRIPTEN=$1
@@ -94,13 +93,17 @@ cp patches/mpi-inv.c "libgcrypt-${LIBGCRYPT_VERSION}/mpi/"
 #configure and build-libgcrypt
 pushd "libgcrypt-${LIBGCRYPT_VERSION}"
 BASEDIR=$(dirname $(pwd))
-${EMSCRIPTEN}/emconfigure ./configure --prefix=${BASEDIR} --with-gpg-error-prefix=${BASEDIR} --disable-asm --enable-shared --disable-static --host=x86-unknown-linux "CFLAGS=-m32"
-mv config.h config.h.original
-sed -e "s:#define HAVE_SYSLOG 1::" \
-    -e "s:#define HAVE_SYS_SELECT_H 1::" config.h.original > config.h
+#exclude gost28147 cipher
+SYMMETRIC_CYPHERS="arcfour blowfish cast5 des aes twofish serpent rfc2268 seed"
+SYMMETRIC_CYPHERS="$SYMMETRIC_CYPHERS camellia idea salsa20 chacha20"
+${EMSCRIPTEN}/emconfigure ./configure --prefix=${BASEDIR} --with-gpg-error-prefix=${BASEDIR} --disable-asm --disable-doc --disable-optimization --enable-shared --disable-static --host=x86-unknown-linux --enable-ciphers="${SYMMETRIC_CYPHERS}" "CFLAGS=-m32"
 
-mv doc/Makefile doc/Makefile.original
-sed -e 's:\$(CC_FOR_BUILD) -o $@ \$(srcdir)/yat2m.c:\gcc -o $@ \$(srcdir)/yat2m.c:' doc/Makefile.original > doc/Makefile
+sed -ie "s:#define HAVE_SYSLOG 1::" config.h
+sed -ie "s:#define HAVE_SYS_SELECT_H 1::" config.h
+
+#skip tests and docs
+sed -ie 's:DIST_SUBDIRS = m4 compat mpi cipher random src doc tests:DIST_SUBDIRS = m4 compat mpi cipher random src:' Makefile
+sed -ie 's:SUBDIRS = compat mpi cipher random src \$(doc) tests:SUBDIRS = compat mpi cipher random src:' Makefile
 
 make clean
 make
