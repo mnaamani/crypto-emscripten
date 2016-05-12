@@ -96,7 +96,7 @@ BASEDIR=$(dirname $(pwd))
 #exclude gost28147 cipher
 SYMMETRIC_CYPHERS="arcfour blowfish cast5 des aes twofish serpent rfc2268 seed"
 SYMMETRIC_CYPHERS="$SYMMETRIC_CYPHERS camellia idea salsa20 chacha20"
-${EMSCRIPTEN}/emconfigure ./configure --prefix=${BASEDIR} --with-gpg-error-prefix=${BASEDIR} --disable-asm --disable-doc --disable-optimization --enable-shared --disable-static --host=x86-unknown-linux --enable-ciphers="${SYMMETRIC_CYPHERS}" "CFLAGS=-m32"
+${EMSCRIPTEN}/emconfigure ./configure --prefix=${BASEDIR} --with-gpg-error-prefix=${BASEDIR} --disable-asm --disable-doc --enable-shared --disable-static --host=x86-unknown-linux --enable-ciphers="${SYMMETRIC_CYPHERS}" "CFLAGS=-m32"
 
 sed -ie "s:#define HAVE_SYSLOG 1::" config.h
 sed -ie "s:#define HAVE_SYS_SELECT_H 1::" config.h
